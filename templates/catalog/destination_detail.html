@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}Study in {{ destination.full_name }} – {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ destination.summary }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="background-image:url('{{ destination.image_src }}')">
+  <div class="container">
+    <div>
+      <div class="breadcrumb"><a href="/">Home</a><span>&rsaquo;</span><a href="{% url 'catalog:destinations' %}">Study Destinations</a><span>&rsaquo;</span>{{ destination.name }}</div>
+      <span class="eyebrow"><img src="{{ destination.flag_url }}" alt="" style="display:inline;width:26px;height:17px;vertical-align:-3px;margin-right:8px;border-radius:2px">Study Destination</span>
+      <h1>Study in <span class="hl">{{ destination.full_name }}</span></h1>
+      <p class="lead">{{ destination.summary }}</p>
+      <div class="hero-features">
+        {% for h in destination.highlights.all %}{% if h.is_active %}<div class="hero-feature"><div class="ic"><i class="{{ h.icon }}"></i></div>{{ h.text }}</div>{% endif %}{% endfor %}
+      </div>
+    </div>
+    {% include "partials/counselling_form.html" with form_title="Plan Your Study in "|add:destination.name %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container layout-side">
+    <div>
+      <article class="rich">{{ destination.description|safe }}</article>
+
+      <h2 class="section-title" style="margin-top:40px">Universities in <span class="hl">{{ destination.name }}</span></h2>
+      <p class="muted">{{ university_count }} universit{{ university_count|pluralize:"y,ies" }} listed.</p>
+      <div class="grid grid-3" style="margin-top:18px">
+        {% for u in universities %}{% include "catalog/_uni_card.html" %}{% empty %}<p class="muted">Universities coming soon.</p>{% endfor %}
+      </div>
+      {% if university_count > 6 %}<p style="margin-top:18px"><a class="link-arrow" href="{% url 'catalog:universities' %}?destination={{ destination.slug }}">View all universities in {{ destination.name }} <i class="fa-solid fa-arrow-right"></i></a></p>{% endif %}
+    </div>
+    <aside class="card sidebar-card">
+      <h3>{{ destination.name }} at a Glance</h3>
+      <ul class="info-list">
+        {% if destination.tuition_fees %}<li><i class="fa-solid fa-graduation-cap"></i><div><strong>Tuition fees</strong>{{ destination.tuition_fees }}</div></li>{% endif %}
+        {% if destination.post_study_work %}<li><i class="fa-solid fa-briefcase"></i><div><strong>Post-study work</strong>{{ destination.post_study_work }}</div></li>{% endif %}
+        {% if destination.cost_of_living %}<li><i class="fa-solid fa-house"></i><div><strong>Cost of living</strong>{{ destination.cost_of_living }}</div></li>{% endif %}
+        {% if destination.pr_options %}<li><i class="fa-solid fa-users"></i><div><strong>PR options</strong>{{ destination.pr_options }}</div></li>{% endif %}
+        {% if destination.popular_intakes %}<li><i class="fa-regular fa-calendar"></i><div><strong>Intakes</strong>{{ destination.popular_intakes }}</div></li>{% endif %}
+      </ul>
+      <a class="btn btn-soft btn-block" href="{% url 'catalog:compare' %}" style="margin-top:12px">Compare with other countries</a>
+      <h4 style="margin-top:22px;font-size:15px">Other destinations</h4>
+      <div class="chip-row">{% for o in others %}<a href="{{ o.get_absolute_url }}">{{ o.name }}</a>{% endfor %}</div>
+    </aside>
+  </div>
+</section>
+
+{% include "partials/cta_band.html" %}
+{% endblock %}

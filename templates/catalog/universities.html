@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}{% if top_only %}Top Universities{% else %}Universities &amp; Courses{% endif %} – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% if top_only %}{% include "partials/hero.html" with crumb="Top Universities" %}{% else %}{% include "partials/hero.html" with crumb="Universities & Courses" %}{% endif %}
+
+<div class="container">
+  {% if top_only %}{% include "partials/search_panel.html" with destinations=all_destinations categories=all_categories active="top" %}{% else %}{% include "partials/search_panel.html" with destinations=all_destinations categories=all_categories active="all" %}{% endif %}
+</div>
+
+<section class="section">
+  <div class="container uni-layout">
+    <form class="card filters" method="get" data-autosubmit>
+      <input type="hidden" name="sort" value="{{ sort }}">
+      {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+      <div class="filter-group">
+        <h4>Study Destination</h4>
+        {% for d in all_destinations %}<label class="check"><input type="checkbox" name="destination" value="{{ d.slug }}" {% if d.slug in selected.destination %}checked{% endif %}><img src="{{ d.flag_url }}" alt="">{{ d.name }}</label>{% endfor %}
+      </div>
+      <div class="filter-group">
+        <h4>Course Level</h4>
+        {% for v, l in levels %}<label class="check"><input type="checkbox" name="level" value="{{ v }}" {% if v in selected.level %}checked{% endif %}>{{ l }}</label>{% endfor %}
+      </div>
+      <div class="filter-group">
+        <h4>Course Category</h4>
+        {% for c in all_categories %}<label class="check"><input type="checkbox" name="category" value="{{ c.slug }}" {% if c.slug in selected.category %}checked{% endif %}>{{ c.name }}</label>{% endfor %}
+      </div>
+      <div class="filter-group">
+        <h4>Intake</h4>
+        {% for i in intakes %}<label class="check"><input type="checkbox" name="intake" value="{{ i }}" {% if i in selected.intake %}checked{% endif %}>{{ i }}</label>{% endfor %}
+      </div>
+      <div class="filter-group">
+        <h4>Max Tuition Fee (per year)</h4>
+        <div class="field"><select name="fee_max">
+          <option value="">Any budget</option>
+          <option value="10000" {% if fee_max == "10000" %}selected{% endif %}>Up to 10,000</option>
+          <option value="15000" {% if fee_max == "15000" %}selected{% endif %}>Up to 15,000</option>
+          <option value="20000" {% if fee_max == "20000" %}selected{% endif %}>Up to 20,000</option>
+          <option value="25000" {% if fee_max == "25000" %}selected{% endif %}>Up to 25,000</option>
+          <option value="35000" {% if fee_max == "35000" %}selected{% endif %}>Up to 35,000</option>
+          <option value="50000" {% if fee_max == "50000" %}selected{% endif %}>Up to 50,000</option>
+        </select></div>
+        <p class="muted" style="font-size:11.5px;margin:0">In the destination's local currency.</p>
+      </div>
+      <a class="btn btn-outline btn-sm" href="{{ request.path }}">Reset Filters</a>
+      <noscript><button class="btn btn-primary btn-sm" type="submit">Apply</button></noscript>
+    </form>
+
+    <div>
+      <div class="results-bar">
+        <span>Showing <strong>{{ total_unis }}</strong> universit{{ total_unis|pluralize:"y,ies" }} and <strong>{{ total_courses }}</strong> course{{ total_courses|pluralize }}</span>
+        <form method="get" style="display:flex;gap:8px;align-items:center">
+          {% for key, values in request.GET.lists %}{% if key != "sort" and key != "page" %}{% for v in values %}<input type="hidden" name="{{ key }}" value="{{ v }}">{% endfor %}{% endif %}{% endfor %}
+          <label for="sort" class="muted">Sort by</label>
+          <select id="sort" name="sort" onchange="this.form.submit()">
+            <option value="popular" {% if sort == "popular" %}selected{% endif %}>Popular</option>
+            <option value="name" {% if sort == "name" %}selected{% endif %}>Name (A–Z)</option>
+            <option value="fee_low" {% if sort == "fee_low" %}selected{% endif %}>Lowest fees</option>
+            <option value="oldest" {% if sort == "oldest" %}selected{% endif %}>Oldest established</option>
+          </select>
+        </form>
+      </div>
+
+      <div class="grid grid-3">
+        {% for u in page_obj %}{% include "catalog/_uni_card.html" %}{% empty %}
+        <div class="card empty" style="grid-column:1/-1"><i class="fa-solid fa-building-columns"></i>No universities match these filters. <a href="{{ request.path }}">Reset filters</a></div>
+        {% endfor %}
+      </div>
+      {% include "partials/pagination.html" %}
+    </div>
+  </div>
+</section>
+
+{% if help %}
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="help-banner">
+      <div>
+        <h3>{{ help.title|hl }}</h3>
+        <p class="muted" style="margin:0">{{ help.subtitle }}</p>
+        <div class="help-points">{% for p in help_points %}<div><i class="{{ p.icon }}"></i>{{ p.title }}</div>{% endfor %}</div>
+      </div>
+      <a class="btn btn-yellow btn-pill" href="{{ help.button_link|default:'/free-counselling/' }}">{{ help.button_text|default:"Get Free Counselling" }} <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

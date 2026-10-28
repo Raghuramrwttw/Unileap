@@ -1,0 +1,36 @@
+{% load unileap %}
+<aside class="side-stack">
+  <form class="search-box" method="get" action="{% url 'blog:list' %}" role="search">
+    <input name="q" value="{{ q }}" placeholder="Search articles, topics..." aria-label="Search articles">
+    <button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+  </form>
+
+  <div class="card side-box">
+    <h3>Popular Categories</h3>
+    <ul class="cat-list">
+      {% for c in categories %}
+      <li><a class="{% if current_category.pk == c.pk %}active{% endif %}" href="{{ c.get_absolute_url }}">{{ c.name }} <span>{{ c.n }} <i class="fa-solid fa-chevron-right" style="font-size:10px;margin-left:6px"></i></span></a></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% if featured %}
+  <div class="card side-box featured-post">
+    <h3>Featured Post</h3>
+    {% if featured.image_src %}<img src="{{ featured.image_src }}" alt="">{% endif %}
+    <h4><a href="{{ featured.get_absolute_url }}" style="color:inherit">{{ featured.title }}</a></h4>
+    <p class="muted" style="font-size:13.5px">{{ featured.excerpt|truncatechars:140 }}</p>
+    <div class="post-foot"><span><i class="fa-regular fa-calendar"></i>{{ featured.published_at|date:"M d, Y" }}</span><a class="round-arrow filled" href="{{ featured.get_absolute_url }}" aria-label="Read"><i class="fa-solid fa-arrow-right"></i></a></div>
+  </div>
+  {% endif %}
+
+  {% with s=sections.newsletter %}
+  <form class="newsletter" method="post" action="{% url 'blog:subscribe' %}" data-ajax>
+    {% csrf_token %}
+    <h3>{{ s.title|default:"Stay Updated" }} <i class="fa-regular fa-paper-plane" style="float:right"></i></h3>
+    <p>{{ s.subtitle|default:"Subscribe to our blog and get the latest study abroad news, tips and updates directly in your inbox." }}</p>
+    <div class="field" style="margin:0"><input type="email" name="email" placeholder="Enter your email address" required style="padding-left:14px;margin-bottom:10px"></div>
+    <button class="btn btn-yellow btn-block" type="submit">{{ s.button_text|default:"Subscribe" }} <i class="fa-solid fa-arrow-right"></i></button>
+  </form>
+  {% endwith %}
+</aside>

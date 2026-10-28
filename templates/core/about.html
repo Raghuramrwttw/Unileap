@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}About Us – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero.html" %}
+
+{% with s=sections.story %}
+<section class="section" id="story">
+  <div class="container story-grid">
+    <div data-reveal>
+      {% if s.eyebrow %}<span class="eyebrow dark">{{ s.eyebrow }}</span>{% endif %}
+      <h2 class="section-title">{{ s.title|hl }}</h2>
+      <div class="muted">{{ s.body|safe }}</div>
+      {% if s.button_text %}<a class="btn btn-yellow btn-pill" href="{{ s.button_link|default:'#mission' }}">{{ s.button_text }} <i class="fa-solid fa-arrow-right"></i></a>{% endif %}
+    </div>
+    <div class="story-media" data-reveal>
+      <div class="photo" style="background-image:url('{{ s.image_src }}')">
+        {% if s.script_text %}<div class="script dark">{% for line in s.script_lines %}{{ line }}<br>{% endfor %}</div>{% endif %}
+      </div>
+      <ul class="flag-list">
+        {% for d in destinations %}
+        <li><img src="{{ d.flag_url }}" alt=""><div><strong>{{ d.name }}</strong><span>{{ d.tagline }}</span></div></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+{% endwith %}
+
+{% if stats %}
+<section class="stats-band">
+  <div class="container stats">
+    {% for st in stats %}
+    <div class="stat"><div class="ic-circle"><i class="{{ st.icon }}"></i></div><div><strong>{{ st.value }}</strong><span>{{ st.label }}</span></div></div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="section" id="mission">
+  <div class="container">
+    {% with s=sections.foundation %}
+    <div class="section-head">
+      <div>{% if s.eyebrow %}<span class="eyebrow dark">{{ s.eyebrow }}</span>{% endif %}<h2>{{ s.title|hl }}</h2></div>
+      {% if s.subtitle %}<p style="max-width:420px">{{ s.subtitle }}</p>{% endif %}
+    </div>
+    {% endwith %}
+    <div class="grid grid-3">
+      {% for f in foundation %}
+      <div class="card mvv-card" data-reveal>
+        <div class="ic-circle"><i class="{{ f.icon }}"></i></div>
+        <div><h3>{{ f.title }}</h3><p>{{ f.description }}</p></div>
+      </div>
+      {% endfor %}
+      {% if values %}
+      <div class="card mvv-card" data-reveal>
+        <div class="ic-circle"><i class="fa-regular fa-gem"></i></div>
+        <div><h3>Our Values</h3><ul class="check-list">{% for v in values %}<li>{{ v.title }}</li>{% endfor %}</ul></div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section soft" id="why-choose-us">
+  <div class="container split-why">
+    <div>
+      {% include "partials/section_head.html" with s=sections.why %}
+      <div class="grid grid-4">
+        {% for item in why_items %}
+        <div class="card why-card stack" data-reveal>
+          <div class="ic-circle"><i class="{{ item.icon }}"></i></div>
+          <div><h4>{{ item.title }}</h4><p>{{ item.description }}</p></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="photo-panel" style="background-image:url('{{ sections.why.image_src }}')">
+      {% if sections.why.script_text %}<div class="script dark">{% for line in sections.why.script_lines %}{{ line }}<br>{% endfor %}</div>{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section-sm" id="process">
+  <div class="container" style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+    <a class="btn btn-soft" href="{% url 'core:team' %}"><i class="fa-solid fa-user-tie"></i> Our Team</a>
+    <a class="btn btn-soft" href="{% url 'core:partners' %}"><i class="fa-solid fa-handshake"></i> Our Partners</a>
+    <a class="btn btn-soft" href="{% url 'core:testimonials' %}"><i class="fa-solid fa-star"></i> Testimonials</a>
+  </div>
+</section>
+
+{% include "partials/cta_band.html" with s=sections.cta %}
+{% endblock %}

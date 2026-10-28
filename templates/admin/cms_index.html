@@ -1,0 +1,56 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div class="ul-dash">
+  <div class="ul-welcome">
+    <div>
+      <h1>Hello, {{ user.get_short_name|default:user.username }} 👋</h1>
+      <p>Edit any text, image, FAQ, destination or blog post here – changes appear on the website immediately.</p>
+    </div>
+    <a class="button" href="/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> View website</a>
+  </div>
+
+  <h2 class="ul-h">Quick actions</h2>
+  <div class="ul-cards">
+    <a class="ul-card action" href="{% url 'admin:blog_post_add' %}"><div class="ic r"><i class="fa-solid fa-pen-to-square"></i></div><div><strong>Write a blog post</strong><span>Add news, guides &amp; updates</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:core_pagehero_changelist' %}"><div class="ic"><i class="fa-solid fa-panorama"></i></div><div><strong>Page banners</strong><span>Headlines &amp; banner images</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:core_section_changelist' %}"><div class="ic p"><i class="fa-solid fa-heading"></i></div><div><strong>Section headings</strong><span>Titles &amp; intro text</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:catalog_university_add' %}"><div class="ic g"><i class="fa-solid fa-building-columns"></i></div><div><strong>Add a university</strong><span>With its courses</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:catalog_destination_changelist' %}"><div class="ic y"><i class="fa-solid fa-earth-europe"></i></div><div><strong>Destinations</strong><span>Countries &amp; comparison data</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:core_faq_changelist' %}"><div class="ic"><i class="fa-solid fa-circle-question"></i></div><div><strong>FAQs</strong><span>Questions on every page</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:core_featureitem_changelist' %}"><div class="ic p"><i class="fa-solid fa-table-cells-large"></i></div><div><strong>Feature cards</strong><span>Icon boxes across pages</span></div></a>
+    <a class="ul-card action" href="{% url 'admin:core_sitesettings_changelist' %}"><div class="ic y"><i class="fa-solid fa-gear"></i></div><div><strong>Site settings</strong><span>Phone, email, address, socials</span></div></a>
+  </div>
+
+  <h2 class="ul-h">Content overview</h2>
+  <div class="ul-cards">
+    <a class="ul-card" href="{% url 'admin:catalog_destination_changelist' %}"><div class="ic g"><i class="fa-solid fa-earth-europe"></i></div><div><strong>{{ counts.destinations }}</strong><span>Destinations</span></div></a>
+    <a class="ul-card" href="{% url 'admin:catalog_university_changelist' %}"><div class="ic p"><i class="fa-solid fa-building-columns"></i></div><div><strong>{{ counts.universities }}</strong><span>Universities</span></div></a>
+    <a class="ul-card" href="{% url 'admin:catalog_course_changelist' %}"><div class="ic"><i class="fa-solid fa-book-open"></i></div><div><strong>{{ counts.courses }}</strong><span>Courses</span></div></a>
+    <a class="ul-card" href="{% url 'admin:blog_post_changelist' %}?status__exact=published"><div class="ic r"><i class="fa-solid fa-newspaper"></i></div><div><strong>{{ counts.posts }}</strong><span>Published posts</span></div></a>
+    <a class="ul-card" href="{% url 'admin:blog_post_changelist' %}?status__exact=draft"><div class="ic y"><i class="fa-solid fa-file-pen"></i></div><div><strong>{{ counts.drafts }}</strong><span>Drafts</span></div></a>
+    <a class="ul-card" href="{% url 'admin:core_faq_changelist' %}"><div class="ic"><i class="fa-solid fa-circle-question"></i></div><div><strong>{{ counts.faqs }}</strong><span>FAQs</span></div></a>
+  </div>
+
+  {% if recent_posts %}
+  <h2 class="ul-h">Recently edited posts</h2>
+  <div class="ul-panel-box">
+    <table>
+      <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Updated</th><th></th></tr></thead>
+      <tbody>
+        {% for p in recent_posts %}
+        <tr>
+          <td><a href="{% url 'admin:blog_post_change' p.pk %}"><strong>{{ p.title }}</strong></a></td>
+          <td>{{ p.category.name }}</td>
+          <td><span class="ul-status {% if p.status == 'published' %}converted{% else %}in_progress{% endif %}">{{ p.get_status_display }}</span></td>
+          <td>{{ p.updated_at|timesince }} ago</td>
+          <td>{% if p.status == 'published' %}<a href="{{ p.get_absolute_url }}" target="_blank" rel="noopener">View <i class="fa-solid fa-arrow-up-right-from-square"></i></a>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,11 @@
+<a class="card post-card" href="{{ post.get_absolute_url }}" data-reveal>
+  <div class="img">
+    {% if post.image_src %}<img src="{{ post.image_src }}" alt="" loading="lazy">{% endif %}
+    {% if post.tag %}<span class="tag tag-{{ post.tag_color }}">{{ post.tag }}</span>{% endif %}
+  </div>
+  <div class="body">
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.excerpt|truncatechars:150 }}</p>
+    <div class="post-foot"><span><i class="fa-regular fa-calendar"></i>{{ post.published_at|date:"M d, Y" }}</span><span class="round-arrow filled"><i class="fa-solid fa-arrow-right"></i></span></div>
+  </div>
+</a>

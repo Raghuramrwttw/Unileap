@@ -1,0 +1,11 @@
+{% load static %}{# Site logo. Pass light=1 on dark backgrounds (footer). An uploaded logo in Site settings overrides the default. #}
+<a class="brand" href="/" aria-label="{{ site.site_name }} home">
+  {% if site.logo %}
+    <img class="brand-logo" src="{{ site.logo.url }}" alt="{{ site.site_name }}">
+  {% elif light %}
+    <img class="brand-logo" src="{% static 'img/unileap-logo-white.png' %}" alt="{{ site.site_name }}" width="300" height="80">
+  {% else %}
+    <img class="brand-logo" src="{% static 'img/unileap-logo.png' %}" alt="{{ site.site_name }}" width="300" height="80">
+  {% endif %}
+  
+</a>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}{% if variant == "shortlisting" %}University Shortlisting{% else %}Free Counselling{% endif %} – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% if variant == "shortlisting" %}
+<section class="hero" style="background-image:url('{{ hero.image_src }}')">
+  <div class="container">
+    <div>
+      <div class="breadcrumb"><a href="/">Home</a><span>&rsaquo;</span><a href="{% url 'catalog:universities' %}">Universities &amp; Courses</a><span>&rsaquo;</span>University Shortlisting</div>
+      <span class="eyebrow">University Shortlisting</span>
+      <h1>Find Your <span class="hl">Best-Fit</span> Universities</h1>
+      <p class="lead">Share your profile and our experts will shortlist universities that match your academics, budget, career goals and preferred intake – free of charge.</p>
+    </div>
+    {% include "partials/counselling_form.html" with form_title="Get My Shortlist" form_sub="Tell us a little about yourself and we'll send a personalised shortlist." %}
+  </div>
+</section>
+{% else %}
+{% include "partials/hero.html" %}
+{% endif %}
+
+<section class="section how-it-works">
+  <div class="container">
+    <div class="section-head center">
+      <div>
+        <span class="eyebrow blue">Simple 5-Step Process</span>
+        <h2>How Our <span class="hl">Free Counselling</span> Works</h2>
+        <p>A clear and guided process from your first enquiry to your dream university.</p>
+      </div>
+    </div>
+    <ol class="timeline">
+      {% for step in steps %}
+      <li class="tl-step" data-reveal>
+        <div class="tl-marker" aria-hidden="true">{{ forloop.counter }}</div>
+        <div class="tl-card">
+          <div class="tl-icon"><i class="{{ step.icon|default:'fa-solid fa-check' }}"></i></div>
+          <span class="tl-label">Step {{ forloop.counter|stringformat:"02d" }}</span>
+          <h4>{{ step.title }}</h4>
+          <p>{{ step.description }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    <div class="tl-cta">
+      <a class="btn btn-yellow btn-pill" href="#">Book My Free Session <i class="fa-solid fa-arrow-up"></i></a>
+      <span class="muted"><i class="fa-regular fa-clock"></i> Takes less than a minute · No obligation</span>
+    </div>
+  </div>
+</section>
+
+<section class="section soft">
+  <div class="container">
+    <div class="section-head"><div><h2>What We <span class="hl">Help With</span></h2></div></div>
+    <div class="grid grid-5">
+      {% for s in services %}
+      <div class="card service-card"><div class="ic-circle"><i class="{{ s.icon }}"></i></div><h3>{{ s.title }}</h3><p>{{ s.description }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

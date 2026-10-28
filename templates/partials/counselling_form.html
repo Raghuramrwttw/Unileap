@@ -1,0 +1,26 @@
+{# Compact enquiry form used in banners. Optional: form_title, form_sub. #}
+<form class="form-card" method="post" action="{% url 'enquiry' %}" data-ajax>
+  {% csrf_token %}
+  <h3>{{ form_title|default:"Get Free Counselling" }}</h3>
+  <p class="sub">{{ form_sub|default:"Take the first step towards your global future. Our experts will guide you." }}</p>
+  <input type="hidden" name="source" value="{{ request.path }}">
+  <input type="hidden" name="next" value="{{ request.path }}">
+  <input type="text" name="website" tabindex="-1" autocomplete="off" style="display:none">
+  <div class="field"><i class="fa-regular fa-user"></i><input name="full_name" placeholder="Full Name *" required maxlength="120" autocomplete="name"></div>
+  <div class="field"><i class="fa-solid fa-phone"></i><input name="phone" type="tel" placeholder="Phone Number *" required maxlength="30" autocomplete="tel"></div>
+  <div class="field"><i class="fa-regular fa-envelope"></i><input name="email" type="email" placeholder="Email Address *" required autocomplete="email"></div>
+  <div class="field"><i class="fa-solid fa-globe"></i>
+    <select name="destination" required>
+      <option value="">Preferred Destination *</option>
+      {% for d in form_destinations %}<option>{{ d }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field"><i class="fa-regular fa-calendar"></i>
+    <select name="intake" required>
+      <option value="">Preferred Intake *</option>
+      {% for i in form_intakes %}<option>{{ i }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">Get Free Counselling <i class="fa-solid fa-arrow-right"></i></button>
+  <p class="form-note"><i class="fa-solid fa-lock"></i>{{ site.privacy_note }}</p>
+</form>

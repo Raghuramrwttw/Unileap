@@ -1,0 +1,16 @@
+[Unit]
+Description=UniLeap Overseas (Gunicorn)
+After=network.target postgresql.service
+
+[Service]
+User=unileap
+Group=www-data
+WorkingDirectory=/home/unileap/app
+ExecStart=/home/unileap/app/.venv/bin/gunicorn unileap.wsgi:application \
+    --bind 127.0.0.1:8000 --workers 3 --timeout 60 \
+    --access-logfile - --error-logfile -
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+{% extends "core/simple_page.html" %}
+{% load unileap %}
+{% block title %}Student Testimonials – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span><a href="{% url 'core:about' %}">About Us</a><span>&rsaquo;</span>Testimonials{% endblock %}
+{% block banner %}
+<span class="eyebrow">{{ section.eyebrow|default:"Testimonials" }}</span>
+<h1>{{ section.title|default:"What Our [[Students]] Say"|hl }}</h1>
+{% if section.subtitle %}<p class="lead">{{ section.subtitle }}</p>{% endif %}
+{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="grid grid-3">
+      {% for t in testimonials %}
+      <div class="card testimonial" data-reveal>
+        <div class="stars">{% for i in "12345"|make_list %}{% if forloop.counter <= t.rating %}<i class="fa-solid fa-star"></i>{% else %}<i class="fa-regular fa-star"></i>{% endif %}{% endfor %}</div>
+        <blockquote>“{{ t.quote }}”</blockquote>
+        <div class="who">
+          {% if t.image_src %}<img class="avatar" src="{{ t.image_src }}" alt="">{% else %}<div class="avatar">{{ t.name|slice:":1" }}</div>{% endif %}
+          <div><strong style="color:var(--navy)">{{ t.name }}</strong><br><span class="muted" style="font-size:12.5px">{{ t.detail }}</span></div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="empty">Testimonials coming soon.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

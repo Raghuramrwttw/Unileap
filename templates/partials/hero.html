@@ -1,0 +1,27 @@
+{% load unileap %}{# Page banner. Expects `hero` (PageHero). Optional: `crumb` (current page label). #}
+{% if hero %}
+<section class="hero{% if not hero.show_counselling_form and not hero.script_text and not hero.features.all %} hero-sm{% endif %}" {% if hero.image_src %}style="background-image:url('{{ hero.image_src }}')"{% endif %}>
+  <div class="container">
+    <div>
+      {% if crumb %}<div class="breadcrumb"><a href="/">Home</a><span>&rsaquo;</span>{{ crumb }}</div>{% endif %}
+      {% if hero.eyebrow %}
+        {% if hero.page == "home" %}<span class="badge-pill">{{ hero.eyebrow }}</span>{% else %}<span class="eyebrow">{{ hero.eyebrow }}</span>{% endif %}
+      {% endif %}
+      <h1>{{ hero.title|hl }}</h1>
+      {% if hero.subtitle %}<p class="lead">{{ hero.subtitle|linebreaksbr }}</p>{% endif %}
+      {% with feats=hero.features.all %}{% if feats %}
+      <div class="hero-features">
+        {% for f in feats %}{% if f.is_active %}
+        <div class="hero-feature"><div class="ic"><i class="{{ f.icon }}"></i></div>{{ f.label }}</div>
+        {% endif %}{% endfor %}
+      </div>
+      {% endif %}{% endwith %}
+    </div>
+    {% if hero.show_counselling_form %}
+      {% include "partials/counselling_form.html" with form_title="Get Free Counselling" %}
+    {% elif hero.script_text %}
+      <div class="script hero-script">{% for line in hero.script_lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}

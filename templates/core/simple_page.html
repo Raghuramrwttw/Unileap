@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load unileap %}
+{# Shared layout for smaller pages: a compact banner then the page body. #}
+{% block content %}
+<section class="hero hero-sm" style="background-image:url('{% block banner_image %}https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=70&auto=format&fit=crop{% endblock %}')">
+  <div class="container">
+    <div>
+      <div class="breadcrumb"><a href="/">Home</a>{% block crumbs %}{% endblock %}</div>
+      {% block banner %}{% endblock %}
+    </div>
+  </div>
+</section>
+{% block body %}{% endblock %}
+{% include "partials/cta_band.html" %}
+{% endblock %}

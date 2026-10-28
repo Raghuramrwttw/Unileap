@@ -1,0 +1,9 @@
+{% extends "core/simple_page.html" %}
+{% block title %}{{ page.title }} – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span>{{ page.title }}{% endblock %}
+{% block banner %}<h1>{{ page.title }}</h1><p class="lead">Last updated: {{ page.updated_at|date:"j F Y" }}</p>{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container"><article class="rich" style="max-width:860px">{{ page.content|safe }}</article></div>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Page not found – {{ site.site_name }}{% endblock %}
+{% block content %}
+<section class="page-404">
+  <div class="container">
+    <div class="big">404</div>
+    <h1>Oops! This page took a different flight.</h1>
+    <p class="muted">The page you're looking for doesn't exist or has been moved.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px">
+      <a class="btn btn-primary" href="/"><i class="fa-solid fa-house"></i> Back to Home</a>
+      <a class="btn btn-outline" href="{% url 'catalog:destinations' %}">Study Destinations</a>
+      <a class="btn btn-yellow" href="{% url 'core:counselling' %}">Get Free Counselling</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

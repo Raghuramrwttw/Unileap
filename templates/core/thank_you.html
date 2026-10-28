@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}Thank You – {{ site.site_name }}{% endblock %}
+{% block extra_head %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+{% with s=sections.hero %}
+<section class="thanks-hero">
+  <div class="container thanks-grid">
+    <div class="thanks-text">
+      <div class="thanks-check" aria-hidden="true">
+        <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span>
+        <span class="spark s4"></span><span class="spark s5"></span><span class="spark s6"></span>
+        <div class="ring"><i class="fa-solid fa-check"></i></div>
+      </div>
+      {% if first_name %}<span class="thanks-hi">Hi {{ first_name }},</span>{% endif %}
+      <h1>{{ s.title|default:"Thank [[You!]]"|hl }}</h1>
+      <p class="thanks-sub">{{ s.subtitle|default:"Your enquiry has been submitted successfully." }}</p>
+      <div class="thanks-body">{{ s.body|safe }}</div>
+    </div>
+    <div class="thanks-photo" style="background-image:url('{{ s.image_src }}')">
+      {% if s.script_text %}<div class="script dark">{% for line in s.script_lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+
+<div class="container">
+  <section class="card thanks-next">
+    <h2 class="section-title">{{ sections.next.title|default:"What Happens [[Next?]]"|hl }}</h2>
+    <ol class="next-steps">
+      {% for step in steps %}
+      <li data-reveal>
+        <div class="top"><span class="n">{{ forloop.counter }}</span><span class="ic"><i class="{{ step.icon }}"></i></span></div>
+        <h4>{{ step.title }}</h4>
+        <p>{{ step.description }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+</div>
+
+<section class="section thanks-explore">
+  <div class="container">
+    {% with s=sections.explore %}
+    <div class="section-head">
+      <div>
+        <h2>{{ s.title|default:"In the Meantime, Explore"|hl }}</h2>
+        {% if s.subtitle %}<p>{{ s.subtitle }}</p>{% endif %}
+      </div>
+      <a class="link-arrow" href="{% url 'core:home' %}">Back to Home <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    {% endwith %}
+    <div class="grid grid-4">
+      <a class="card explore-card" href="{% url 'catalog:destinations' %}" data-reveal>
+        <span class="ic-circle"><i class="fa-solid fa-globe"></i></span>
+        <span class="txt"><strong>Study Destinations</strong><span>Explore top countries for international education.</span></span>
+        <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      <a class="card explore-card" href="{% url 'catalog:universities' %}" data-reveal>
+        <span class="ic-circle"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span class="txt"><strong>Universities &amp; Courses</strong><span>Find the right university and course for you.</span></span>
+        <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      <a class="card explore-card" href="{% url 'loans:loan' %}" data-reveal>
+        <span class="ic-circle"><i class="fa-solid fa-indian-rupee-sign"></i></span>
+        <span class="txt"><strong>Education Loan</strong><span>Learn about loan options and eligibility.</span></span>
+        <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      <a class="card explore-card" href="{% url 'blog:list' %}" data-reveal>
+        <span class="ic-circle"><i class="fa-solid fa-file-lines"></i></span>
+        <span class="txt"><strong>Latest Blog</strong><span>Read expert insights and study abroad updates.</span></span>
+        <span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

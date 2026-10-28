@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}Study Destinations – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero.html" %}
+
+<section class="section">
+  <div class="container">
+    {% url 'catalog:compare' as compare_url %}
+    {% with s=sections.list %}
+    <div class="section-head">
+      <div><h2>{{ s.title|hl }}</h2><p>{{ s.subtitle }}</p></div>
+      <a class="btn btn-soft" href="{{ compare_url }}">Compare Destinations <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    {% endwith %}
+    <div class="grid grid-3">
+      {% for d in destinations %}
+      <article class="card dest-big" data-reveal>
+        <div class="main">
+          <div class="img">
+            {% if d.image_src %}<img src="{{ d.image_src }}" alt="{{ d.full_name }}" loading="lazy">{% endif %}
+            <img class="flag" src="{{ d.flag_url }}" alt="">
+          </div>
+          <div class="body">
+            <h3>{{ d.full_name }}</h3>
+            <p>{{ d.summary }}</p>
+            <a class="btn btn-primary btn-sm btn-explore" href="{{ d.get_absolute_url }}">Explore {{ d.name }} <span class="round-arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+          </div>
+        </div>
+        <ul class="highlights">
+          {% for h in d.highlights.all %}{% if h.is_active %}<li><i class="{{ h.icon }}"></i>{{ h.text }}</li>{% endif %}{% endfor %}
+        </ul>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% with s=sections.compare %}
+<section class="compare-banner">
+  <div class="container">
+    <div>
+      <h2 class="section-title">{{ s.title|hl }}</h2>
+      <p class="muted">{{ s.subtitle }}</p>
+      <a class="btn btn-primary" href="{% url 'catalog:compare' %}">{{ s.button_text|default:"Compare Now" }} <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="factor-tiles">
+      {% for f in compare_factors %}<div class="factor"><i class="{{ f.icon }}"></i>{{ f.title }}</div>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+
+<section class="section">
+  <div class="container">
+    {% include "partials/section_head.html" with s=sections.why %}
+    <div class="grid grid-4">
+      {% for item in why_items %}
+      <div class="card why-card" data-reveal>
+        <div class="ic-circle"><i class="{{ item.icon }}"></i></div>
+        <div><h4>{{ item.title }}</h4><p>{{ item.description }}</p></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "partials/cta_band.html" with s=sections.cta %}
+{% endblock %}

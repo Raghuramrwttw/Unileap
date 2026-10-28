@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}{% if current_category %}{{ current_category.name }} – {% endif %}Blog – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero.html" %}
+
+<section class="section" style="padding-bottom:20px">
+  <div class="container">
+    {% url 'blog:list' as blog_url %}
+    {% include "partials/section_head.html" with s=sections.categories link_url=blog_url link_text="View All Articles" %}
+    <div class="cat-tiles">
+      <a class="card tile {% if not current_category %}active{% endif %}" href="{% url 'blog:list' %}"><i class="fa-solid fa-table-cells-large"></i>All</a>
+      {% for c in categories %}
+      <a class="card tile {% if current_category.pk == c.pk %}active{% endif %}" href="{{ c.get_absolute_url }}"><i class="{{ c.icon }}"></i>{{ c.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:20px">
+  <div class="container layout-side">
+    <div>
+      <h2 class="section-title">{% if current_category %}{{ current_category.name }}{% elif q %}Results for “{{ q }}”{% else %}{{ sections.latest.title|default:"Latest Articles"|hl }}{% endif %}</h2>
+      <div class="grid grid-3" style="margin-top:18px">
+        {% for post in page_obj %}{% include "blog/_card.html" %}{% empty %}
+        <div class="card empty" style="grid-column:1/-1"><i class="fa-regular fa-newspaper"></i>No articles found.</div>
+        {% endfor %}
+      </div>
+      {% include "partials/pagination.html" %}
+    </div>
+    {% include "blog/_sidebar.html" %}
+  </div>
+</section>
+{% endblock %}

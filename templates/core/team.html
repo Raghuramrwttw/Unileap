@@ -1,0 +1,28 @@
+{% extends "core/simple_page.html" %}
+{% load unileap %}
+{% block title %}Our Team – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span><a href="{% url 'core:about' %}">About Us</a><span>&rsaquo;</span>Our Team{% endblock %}
+{% block banner %}
+<span class="eyebrow">{{ section.eyebrow|default:"Our Team" }}</span>
+<h1>{{ section.title|default:"Meet Our [[Experts]]"|hl }}</h1>
+{% if section.subtitle %}<p class="lead">{{ section.subtitle }}</p>{% endif %}
+{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="grid grid-4">
+      {% for m in members %}
+      <div class="card team-card" data-reveal>
+        {% if m.image_src %}<img src="{{ m.image_src }}" alt="{{ m.name }}">{% else %}<div class="avatar">{{ m.name|slice:":1" }}</div>{% endif %}
+        <h3 style="font-size:17px;margin-bottom:2px">{{ m.name }}</h3>
+        <p class="chip">{{ m.role }}</p>
+        {% if m.bio %}<p class="muted" style="font-size:13.5px">{{ m.bio }}</p>{% endif %}
+        {% if m.linkedin_url %}<a href="{{ m.linkedin_url }}" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>{% endif %}
+      </div>
+      {% empty %}
+      <p class="empty">Team profiles coming soon.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

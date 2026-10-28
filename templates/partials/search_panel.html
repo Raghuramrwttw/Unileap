@@ -1,0 +1,22 @@
+
+{% url 'catalog:universities' as all_url %}{% url 'catalog:courses' as courses_url %}{% url 'catalog:top_universities' as top_url %}
+<div class="card search-panel {{ extra_class }}">
+  <div class="search-tabs" role="tablist">
+    <a class="{% if active == 'all' or not active %}active{% endif %}" href="{{ all_url }}" {% if switchable %}data-search-tab{% endif %}><i class="fa-solid fa-globe"></i> Search Universities &amp; Courses</a>
+    <a class="{% if active == 'courses' %}active{% endif %}" href="{{ courses_url }}" {% if switchable %}data-search-tab{% endif %}><i class="fa-solid fa-magnifying-glass"></i> Search by Course</a>
+    <a class="{% if active == 'top' %}active{% endif %}" href="{{ top_url }}" {% if switchable %}data-search-tab{% endif %}><i class="fa-solid fa-building-columns"></i> Top Universities</a>
+  </div>
+  <form method="get" class="search-row" action="{% if active == 'courses' %}{{ courses_url }}{% elif active == 'top' %}{{ top_url }}{% else %}{{ all_url }}{% endif %}" data-search-form>
+    <div><label for="s-dest">Study Destination</label><div class="field"><select id="s-dest" name="destination"><option value="">All destinations</option>{% for d in destinations %}<option value="{{ d.slug }}" {% if d.slug in selected.destination %}selected{% endif %}>{{ d.name }}</option>{% endfor %}</select></div></div>
+    <div><label for="s-level">Course Level</label><div class="field"><select id="s-level" name="level"><option value="">Select level</option>{% for v, l in levels %}<option value="{{ v }}" {% if v in selected.level %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div></div>
+    <div><label for="s-cat">Course Category</label><div class="field"><select id="s-cat" name="category"><option value="">Select category</option>{% for c in categories %}<option value="{{ c.slug }}" {% if c.slug in selected.category %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div></div>
+    <div><label for="s-q">University or course</label><div class="field"><input id="s-q" name="q" value="{{ q }}" placeholder="e.g. Data Science"></div></div>
+    <button class="btn btn-primary" type="submit" style="height:46px;padding:0 30px"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+  </form>
+  {% if trending %}
+  <div class="trending">
+    <strong>Trending:</strong>
+    {% for t in trending %}<a href="{{ all_url }}?q={{ t.title|urlencode }}">{{ t.title }}</a>{% endfor %}
+  </div>
+  {% endif %}
+</div>

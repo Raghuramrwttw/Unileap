@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}Education Loan – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero.html" %}
+
+<section class="section" id="loan-options">
+  <div class="container grid grid-4">
+    {% for h in highlights %}
+    <div class="card highlight-card" data-reveal>
+      <div class="ic-circle solid"><i class="{{ h.icon }}"></i></div>
+      <h3>{{ h.title }}</h3>
+      <p>{{ h.description }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" id="lenders">
+  <div class="container">
+    {% include "partials/section_head.html" with s=sections.partners %}
+    <div class="lenders">
+      {% for l in lenders %}
+      <div class="card lender">{% if l.image_src %}<img src="{{ l.image_src }}" alt="{{ l.name }}">{% else %}<span style="color:{{ l.brand_color }}">{{ l.name }}</span>{% endif %}</div>
+      {% endfor %}
+      <div class="card lender more">and more</div>
+    </div>
+    {% if sections.partners.body %}<div class="note"><i class="fa-solid fa-circle-info"></i><div>{{ sections.partners.body|safe }}</div></div>{% endif %}
+  </div>
+</section>
+
+<section class="section soft" id="process">
+  <div class="container">
+    <div class="section-head">
+      <div><h2>{{ sections.process.title|hl }}</h2><p>{{ sections.process.subtitle }}</p></div>
+      {% if sections.process.script_text %}<div class="script dark" style="font-size:28px">{% for line in sections.process.script_lines %}{{ line }}<br>{% endfor %}</div>{% endif %}
+    </div>
+    <div class="process-row">
+      {% for step in steps %}
+      <div class="process-step" data-reveal>
+        <div class="top"><span class="n">{{ forloop.counter }}</span><span class="ic-circle"><i class="{{ step.icon }}"></i></span></div>
+        <h4>{{ step.title }}</h4>
+        <p>{{ step.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="types">
+  <div class="container loan-types-layout">
+    <div>
+      {% include "partials/section_head.html" with s=sections.types %}
+      <div class="grid grid-2">
+        {% for t in loan_types %}
+        <div class="card loan-type {{ t.style }}" data-reveal>
+          <div class="head"><div class="ic-circle" style="background:#fff"><i class="{{ t.icon }}"></i></div><div><h3>{{ t.title }}</h3><p>{{ t.subtitle }}</p></div></div>
+          <ul class="check-list">{% for p in t.point_list %}<li>{{ p }}</li>{% endfor %}</ul>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="eligibility" style="margin-top:40px">
+        {% include "partials/section_head.html" with s=sections.eligibility %}
+        <div class="grid grid-4">
+          {% for e in eligibility %}<div class="card mini-card"><div class="ic-circle sm"><i class="{{ e.icon }}"></i></div><p>{{ e.title }}</p></div>{% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="photo-panel" style="background-image:url('{{ sections.types.image_src }}')">
+      {% if sections.types.script_text %}<div class="script dark">{% for line in sections.types.script_lines %}{{ line }}<br>{% endfor %}</div>{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    {% include "partials/section_head.html" with s=sections.details %}
+    <div class="grid grid-4">
+      {% for d in details %}
+      <div class="card mini-card"><div class="ic-circle"><i class="{{ d.icon }}"></i></div><div><h4>{{ d.title }}</h4><p>{{ d.description }}</p>{% if d.note %}<span>{{ d.note }}</span>{% endif %}</div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if documents %}
+<section class="section soft" id="documents">
+  <div class="container">
+    {% include "partials/section_head.html" with s=sections.documents %}
+    <div class="grid grid-3">
+      {% for d in documents %}
+      <div class="card why-card"><div class="ic-circle sm"><i class="{{ d.icon|default:'fa-regular fa-file-lines' }}"></i></div><div><h4>{{ d.title }}</h4><p>{{ d.description }}</p></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" id="faq">
+  <div class="container faq-layout">
+    <div>
+      {% include "partials/section_head.html" with s=sections.faq %}
+      {% include "partials/faq_list.html" %}
+    </div>
+    {% with s=sections.cta %}
+    <div class="guidance-box" style="background-image:linear-gradient(130deg,rgba(10,35,80,.97),rgba(19,56,125,.8)),url('{{ s.image_src }}');background-size:cover">
+      <h3>{{ s.title|hl }}</h3>
+      <p>{{ s.subtitle }}</p>
+      <a class="btn btn-yellow btn-pill" href="{{ s.button_link|default:'/free-counselling/' }}">{{ s.button_text|default:"Get Free Counselling" }} <i class="fa-solid fa-arrow-right"></i></a>
+      {% if s.body %}<div class="disclaimer"><i class="fa-solid fa-circle-info"></i><div>{{ s.body|safe }}</div></div>{% endif %}
+    </div>
+    {% endwith %}
+  </div>
+</section>
+{% endblock %}

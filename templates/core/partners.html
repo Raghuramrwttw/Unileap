@@ -1,0 +1,33 @@
+{% extends "core/simple_page.html" %}
+{% load unileap %}
+{% block title %}Our Partners – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span><a href="{% url 'core:about' %}">About Us</a><span>&rsaquo;</span>Our Partners{% endblock %}
+{% block banner %}
+<span class="eyebrow">{{ section.eyebrow|default:"Our Partners" }}</span>
+<h1>{{ section.title|default:"Trusted [[Partners]]"|hl }}</h1>
+{% if section.subtitle %}<p class="lead">{{ section.subtitle }}</p>{% endif %}
+{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="grid grid-3">
+      {% for p in partners %}
+      <div class="card service-card" data-reveal>
+        {% if p.image_src %}<img src="{{ p.image_src }}" alt="{{ p.name }}" style="height:56px;object-fit:contain;margin-bottom:10px">{% else %}<div class="ic-circle"><i class="fa-solid fa-handshake"></i></div>{% endif %}
+        <h3>{{ p.name }}</h3>
+        <p>{{ p.description }}</p>
+        {% if p.website %}<a class="link-arrow" href="{{ p.website }}" target="_blank" rel="noopener">Visit website <i class="fa-solid fa-arrow-up-right-from-square"></i></a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% if lenders %}
+    <h2 class="section-title" style="margin-top:48px">Lending <span class="hl">Partners</span></h2>
+    <div class="lenders" style="margin-top:20px">
+      {% for l in lenders %}
+      <div class="card lender">{% if l.image_src %}<img src="{{ l.image_src }}" alt="{{ l.name }}">{% else %}<span style="color:{{ l.brand_color }}">{{ l.name }}</span>{% endif %}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

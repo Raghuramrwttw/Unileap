@@ -1,0 +1,110 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="ul-dash">
+  <div class="ul-welcome">
+    <div>
+      <h1>Welcome back, {{ user.get_short_name|default:user.username }} 👋</h1>
+      <p>You have full control of the UniLeap Overseas platform – users, enquiries and all website content.</p>
+    </div>
+    <a class="button" href="{% url 'admin:leads_enquiry_changelist' %}?status__exact=new">View new enquiries</a>
+  </div>
+
+  <h2 class="ul-h">Enquiries <span class="ul-live" title="Updates automatically">Live</span></h2>
+  <div class="ul-cards">
+    <a class="ul-card" href="{% url 'admin:leads_enquiry_changelist' %}?status__exact=new"><div class="ic r"><i class="fa-solid fa-bell"></i></div><div><strong data-count="new">{{ stats.enquiries_new }}</strong><span>New (unhandled)</span></div></a>
+    <a class="ul-card" href="{% url 'admin:leads_enquiry_changelist' %}"><div class="ic"><i class="fa-solid fa-calendar-day"></i></div><div><strong data-count="today">{{ stats.enquiries_today }}</strong><span>Today</span></div></a>
+    <a class="ul-card" href="{% url 'admin:leads_enquiry_changelist' %}"><div class="ic p"><i class="fa-solid fa-calendar-week"></i></div><div><strong>{{ stats.enquiries_week }}</strong><span>Last 7 days</span></div></a>
+    <a class="ul-card" href="{% url 'admin:leads_enquiry_changelist' %}"><div class="ic y"><i class="fa-solid fa-inbox"></i></div><div><strong data-count="total">{{ stats.enquiries_total }}</strong><span>Total enquiries</span></div></a>
+    <a class="ul-card" href="{% url 'admin:leads_enquiry_changelist' %}?status__exact=converted"><div class="ic g"><i class="fa-solid fa-circle-check"></i></div><div><strong>{{ stats.converted }}</strong><span>Converted</span></div></a>
+  </div>
+
+  <div class="ul-grid2" style="margin-top:18px">
+    <div class="ul-panel-box">
+      <h3>Latest enquiries <span class="ul-live">Live</span></h3>
+      <table>
+        <thead><tr><th>Name</th><th>Contact</th><th>Destination</th><th>Intake</th><th>Status</th><th>When</th></tr></thead>
+        <tbody id="ul-feed"><tr><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="ul-panel-box ul-bars">
+      <h3>Top destinations</h3>
+      <ul>
+        {% for row in by_destination %}
+        <li>{{ row.destination }} <strong style="float:right">{{ row.n }}</strong><div class="ul-bar"><div style="width:{% widthratio row.n stats.enquiries_total 100 %}%"></div></div></li>
+        {% empty %}<li>No enquiries yet.</li>{% endfor %}
+      </ul>
+      <h3>By status</h3>
+      <ul>
+        {% for row in by_status %}
+        <li><span class="ul-status {{ row.status }}">{{ row.label }}</span> <strong style="float:right">{{ row.n }}</strong></li>
+        {% empty %}<li>—</li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="ul-h">Platform</h2>
+  <div class="ul-cards">
+    <a class="ul-card" href="{% url 'admin:auth_user_changelist' %}?is_superuser__exact=1"><div class="ic y"><i class="fa-solid fa-user-shield"></i></div><div><strong>{{ stats.superadmins }}</strong><span>Super admins</span></div></a>
+    <a class="ul-card" href="{% url 'admin:auth_user_changelist' %}"><div class="ic"><i class="fa-solid fa-user-pen"></i></div><div><strong>{{ stats.website_admins }}</strong><span>Website admins</span></div></a>
+    <a class="ul-card" href="{% url 'admin:catalog_destination_changelist' %}"><div class="ic g"><i class="fa-solid fa-earth-europe"></i></div><div><strong>{{ stats.destinations }}</strong><span>Destinations</span></div></a>
+    <a class="ul-card" href="{% url 'admin:catalog_university_changelist' %}"><div class="ic p"><i class="fa-solid fa-building-columns"></i></div><div><strong>{{ stats.universities }}</strong><span>Universities</span></div></a>
+    <a class="ul-card" href="{% url 'admin:catalog_course_changelist' %}"><div class="ic"><i class="fa-solid fa-book-open"></i></div><div><strong>{{ stats.courses }}</strong><span>Courses</span></div></a>
+    <a class="ul-card" href="{% url 'admin:blog_post_changelist' %}"><div class="ic r"><i class="fa-solid fa-newspaper"></i></div><div><strong>{{ stats.posts }}</strong><span>Published posts ({{ stats.drafts }} drafts)</span></div></a>
+    <a class="ul-card" href="{% url 'admin:blog_subscriber_changelist' %}"><div class="ic y"><i class="fa-solid fa-envelope-open-text"></i></div><div><strong>{{ stats.subscribers }}</strong><span>Subscribers</span></div></a>
+    <a class="ul-card" href="{% url 'cms:index' %}"><div class="ic g"><i class="fa-solid fa-pen-ruler"></i></div><div><strong style="font-size:14px">Website Admin</strong><span>Open content panel</span></div></a>
+  </div>
+</div>
+{{ block.super }}
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script>
+(function () {
+  const feed = document.getElementById("ul-feed");
+  const url = "{% url 'admin:live_feed' %}";
+  let lastId = 0, first = true;
+  const baseTitle = document.title;
+
+  function esc(s) { const d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+  function row(e, fresh) {
+    return '<tr' + (fresh ? ' class="ul-new"' : '') + '><td><a href="' + e.url + '"><strong>' + esc(e.name) + '</strong></a></td>' +
+      '<td>' + esc(e.phone) + '<br><small>' + esc(e.email) + '</small></td><td>' + esc(e.destination) + '</td><td>' + esc(e.intake) +
+      '</td><td><span class="ul-status ' + esc(e.status_key) + '">' + esc(e.status) + '</span></td><td><small>' + esc(e.ago) + '</small></td></tr>';
+  }
+  function toast(msg) {
+    const t = document.createElement("div");
+    t.className = "ul-toast";
+    t.innerHTML = '<i class="fa-solid fa-bell"></i><span>' + esc(msg) + '</span>';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 6000);
+  }
+  async function poll() {
+    try {
+      const res = await fetch(url + (lastId ? "?since=" + lastId : ""), { headers: { "X-Requested-With": "XMLHttpRequest" } });
+      if (!res.ok) return;
+      const data = await res.json();
+      Object.entries(data.counts).forEach(([k, v]) => {
+        const el = document.querySelector('[data-count="' + k + '"]');
+        if (el) el.textContent = v;
+      });
+      if (first) {
+        feed.innerHTML = data.items.length ? data.items.map((e) => row(e, false)).join("") : '<tr><td colspan="6">No enquiries yet – they will appear here instantly.</td></tr>';
+        first = false;
+      } else if (data.items.length) {
+        if (!lastId || feed.querySelector("td[colspan]")) feed.innerHTML = "";
+        feed.insertAdjacentHTML("afterbegin", data.items.map((e) => row(e, true)).join(""));
+        while (feed.children.length > 10) feed.lastElementChild.remove();
+        toast(data.items.length === 1 ? "New enquiry from " + data.items[0].name : data.items.length + " new enquiries");
+        document.title = "(" + data.counts.new + ") " + baseTitle;
+      }
+      lastId = data.last_id;
+    } catch (e) { /* network hiccup – try again next tick */ }
+  }
+  poll();
+  setInterval(poll, 8000);
+})();
+</script>
+{% endblock %}

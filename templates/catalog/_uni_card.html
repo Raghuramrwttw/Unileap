@@ -1,0 +1,23 @@
+{# University card. Expects `u` with `matching_courses` prefetched (to_attr). #}
+<article class="card uni-card" data-reveal>
+  <div class="img">
+    {% if u.image_src %}<img src="{{ u.image_src }}" alt="{{ u.name }}" loading="lazy">{% endif %}
+    <span class="country-chip"><img src="{{ u.destination.flag_url }}" alt="">{{ u.destination.name }}</span>
+  </div>
+  <div class="body">
+    <h3>{{ u.name }}</h3>
+    <div class="uni-meta">
+      <span><i class="fa-solid fa-location-dot"></i>{{ u.city }}, {{ u.destination.name }}</span>
+      <span><i class="fa-solid fa-building-columns"></i>{{ u.get_institution_type_display }}</span>
+      {% if u.established %}<span><i class="fa-regular fa-calendar"></i>Est. {{ u.established }}</span>{% endif %}
+    </div>
+    <h5>Popular Courses</h5>
+    <ul class="dot-list">
+      {% for c in u.matching_courses|slice:":3" %}<li>{{ c.name }}</li>{% endfor %}
+    </ul>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="{{ u.get_absolute_url }}#courses">View Courses <i class="fa-solid fa-arrow-right"></i></a>
+      <a class="btn btn-outline" href="{{ u.get_absolute_url }}">View University</a>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,5 @@
+.ul-richtext { width: 100%; max-width: 900px; background: #fff; border-radius: 8px; }
+.ul-richtext .ql-toolbar { border-radius: 8px 8px 0 0; }
+.ul-richtext .ql-container { min-height: 220px; font-size: 15px; border-radius: 0 0 8px 8px; }
+.ul-richtext .ql-editor { min-height: 220px; color: #16213a; }
+.ul-richtext .ql-editor h2, .ul-richtext .ql-editor h3, .ul-richtext .ql-editor h4 { background: none; color: #0a2350; text-transform: none; padding: 0; }

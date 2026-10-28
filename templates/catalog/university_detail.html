@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load unileap humanize %}
+{% block title %}{{ university.name }} – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="background-image:url('{{ university.image_src }}')">
+  <div class="container">
+    <div>
+      <div class="breadcrumb"><a href="/">Home</a><span>&rsaquo;</span><a href="{% url 'catalog:universities' %}">Universities &amp; Courses</a><span>&rsaquo;</span>{{ university.name }}</div>
+      <span class="eyebrow"><img src="{{ university.destination.flag_url }}" alt="" style="display:inline;width:26px;height:17px;vertical-align:-3px;margin-right:8px;border-radius:2px">{{ university.city }}, {{ university.destination.full_name }}</span>
+      <h1>{{ university.name }}</h1>
+      <div class="hero-features">
+        <div class="hero-feature"><div class="ic"><i class="fa-solid fa-building-columns"></i></div>{{ university.get_institution_type_display }}</div>
+        {% if university.established %}<div class="hero-feature"><div class="ic"><i class="fa-regular fa-calendar"></i></div>Est. {{ university.established }}</div>{% endif %}
+        <div class="hero-feature"><div class="ic"><i class="fa-solid fa-book-open"></i></div>{{ courses|length }} Course{{ courses|length|pluralize }}</div>
+        {% if university.ranking %}<div class="hero-feature"><div class="ic"><i class="fa-solid fa-trophy"></i></div>{{ university.ranking }}</div>{% endif %}
+      </div>
+    </div>
+    {% include "partials/counselling_form.html" with form_title="Apply with Expert Help" %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container layout-side">
+    <div>
+      {% if university.description %}<article class="rich">{{ university.description|safe }}</article>{% endif %}
+      <h2 class="section-title" id="courses" style="margin-top:32px">Available <span class="hl">Courses</span></h2>
+      <div class="card" style="overflow:hidden;margin-top:16px">
+        <div class="course-row head"><span>Course</span><span>Level</span><span>Duration</span><span>Intakes</span><span>Tuition / year</span></div>
+        {% for c in courses %}
+        <div class="course-row">
+          <span class="name"><strong>{{ c.name }}</strong><span class="chip">{{ c.category.name }}</span></span>
+          <span>{{ c.get_level_display }}</span>
+          <span>{{ c.duration|default:"—" }}</span>
+          <span>{{ c.intakes }}</span>
+          <span>{% if c.tuition_fee %}{{ university.destination.currency }}{{ c.tuition_fee|intcomma }}{% elif c.tuition_fee == 0 %}Tuition-free{% else %}—{% endif %}</span>
+        </div>
+        {% empty %}
+        <p class="empty">Course details coming soon.</p>
+        {% endfor %}
+      </div>
+      <p class="note"><i class="fa-solid fa-circle-info"></i>Fees are indicative and may change. Please confirm with our counsellors before applying.</p>
+    </div>
+    <aside class="card sidebar-card">
+      <h3>Quick Facts</h3>
+      <ul class="info-list">
+        <li><i class="fa-solid fa-location-dot"></i><div><strong>Location</strong>{{ university.city }}, {{ university.destination.full_name }}</div></li>
+        <li><i class="fa-solid fa-building-columns"></i><div><strong>Type</strong>{{ university.get_institution_type_display }}</div></li>
+        {% if university.established %}<li><i class="fa-regular fa-calendar"></i><div><strong>Established</strong>{{ university.established }}</div></li>{% endif %}
+        {% if university.website %}<li><i class="fa-solid fa-link"></i><div><strong>Website</strong><a href="{{ university.website }}" target="_blank" rel="noopener">Official site</a></div></li>{% endif %}
+      </ul>
+      {% if related %}
+      <h4 style="margin-top:18px;font-size:15px">More in {{ university.destination.name }}</h4>
+      <ul class="info-list">{% for r in related %}<li><i class="fa-solid fa-building-columns"></i><a href="{{ r.get_absolute_url }}">{{ r.name }}</a></li>{% endfor %}</ul>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+{% include "partials/cta_band.html" %}
+{% endblock %}

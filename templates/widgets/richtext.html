@@ -1,0 +1,4 @@
+<div class="ul-richtext" data-target="{{ widget.attrs.id }}">
+  <div class="ul-richtext-editor"></div>
+  <textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %} style="display:none">{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+</div>

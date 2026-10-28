@@ -1,0 +1,29 @@
+{% extends "core/simple_page.html" %}
+{% block title %}FAQs – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span>FAQs{% endblock %}
+{% block banner %}
+<span class="eyebrow">Help Centre</span>
+<h1>Frequently Asked <span class="hl">Questions</span></h1>
+<p class="lead">Answers to common questions about studying abroad, admissions, visas and education loans.</p>
+{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container layout-side">
+    <div>
+      {% for label, faqs in groups %}
+      <h2 class="section-title" style="font-size:22px;margin-top:{% if forloop.first %}0{% else %}36px{% endif %}">{{ label }}</h2>
+      {% include "partials/faq_list.html" %}
+      {% endfor %}
+    </div>
+    <aside class="card sidebar-card">
+      <h3>Still have questions?</h3>
+      <p class="muted">Talk to our experts and get personal guidance on your study abroad journey.</p>
+      <ul class="info-list">
+        <li><i class="fa-solid fa-phone"></i><div><strong>Call us</strong><a href="tel:{{ site.phone|cut:' ' }}">{{ site.phone }}</a></div></li>
+        <li><i class="fa-solid fa-envelope"></i><div><strong>Email</strong><a href="mailto:{{ site.email }}">{{ site.email }}</a></div></li>
+      </ul>
+      <a class="btn btn-yellow btn-block" href="{% url 'core:contact' %}#form">Talk to Our Experts <i class="fa-solid fa-arrow-right"></i></a>
+    </aside>
+  </div>
+</section>
+{% endblock %}

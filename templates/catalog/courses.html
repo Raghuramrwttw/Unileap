@@ -1,0 +1,54 @@
+{% extends "core/simple_page.html" %}
+{% load unileap humanize %}
+{% block title %}{% if popular_only %}Popular Courses{% else %}Courses{% endif %} – {{ site.site_name }}{% endblock %}
+{% block banner_image %}https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=70&auto=format&fit=crop{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span><a href="{% url 'catalog:universities' %}">Universities &amp; Courses</a><span>&rsaquo;</span>{% if popular_only %}Popular Courses{% else %}Courses{% endif %}{% endblock %}
+{% block banner %}
+<span class="eyebrow">{% if popular_only %}Popular Courses{% else %}Courses by Subject{% endif %}</span>
+<h1>Find the <span class="hl">Right Course</span> for Your Career</h1>
+<p class="lead">Explore industry-relevant courses at leading universities across the UK, USA, Canada, Australia, Ireland and Germany.</p>
+{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="grid grid-8" style="margin-bottom:24px">
+      <a class="card tile {% if not current_category %}active{% endif %}" href="?{% query_replace category='' page=1 %}"><i class="fa-solid fa-table-cells-large"></i>All Subjects</a>
+      {% for c in categories %}
+      <a class="card tile {% if c.slug == current_category %}active{% endif %}" href="?{% query_replace category=c.slug page=1 %}"><i class="{{ c.icon }}"></i>{{ c.name }}</a>
+      {% endfor %}
+    </div>
+    {% if current_destination or current_intake %}
+    <p class="muted" style="font-size:14px">
+      Showing courses{% if current_destination %} in <strong>{{ current_destination.full_name }}</strong>{% endif %}{% if current_intake %} with a <strong>{{ current_intake }}</strong> intake{% endif %}.
+      <a href="{{ request.path }}">Clear all filters</a>
+    </p>
+    {% endif %}
+    <form method="get" class="results-bar">
+      {% for key in "category level destination intake"|split %}{% with value=request.GET|get_param:key %}{% if value %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endwith %}{% endfor %}
+      <div class="chip-row">
+        <a class="{% if not current_level %}active{% endif %}" href="?{% query_replace level='' page=1 %}">All levels</a>
+        {% for v, l in levels %}<a class="{% if v == current_level %}active{% endif %}" href="?{% query_replace level=v page=1 %}">{{ l }}</a>{% endfor %}
+      </div>
+      <div class="search-box" style="min-width:280px">
+        <input name="q" value="{{ q }}" placeholder="Search courses or universities" aria-label="Search courses">
+        <button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+    </form>
+    <div class="card" style="overflow:hidden">
+      <div class="course-row head"><span>Course</span><span>University</span><span>Level</span><span>Intakes</span><span>Tuition / year</span></div>
+      {% for c in page_obj %}
+      <div class="course-row">
+        <span class="name"><strong>{{ c.name }}</strong><span class="chip">{{ c.category.name }}</span>{% if c.is_popular %} <span class="chip yellow">Popular</span>{% endif %}</span>
+        <span><a href="{{ c.university.get_absolute_url }}">{{ c.university.name }}</a><br><span class="muted" style="font-size:12.5px">{{ c.university.city }}, {{ c.university.destination.name }}</span></span>
+        <span>{{ c.get_level_display }}</span>
+        <span>{{ c.intakes }}</span>
+        <span>{% if c.tuition_fee %}{{ c.university.destination.currency }}{{ c.tuition_fee|intcomma }}{% elif c.tuition_fee == 0 %}Tuition-free{% else %}—{% endif %}</span>
+      </div>
+      {% empty %}
+      <div class="empty"><i class="fa-solid fa-book-open"></i>No courses found. <a href="{{ request.path }}">Clear filters</a></div>
+      {% endfor %}
+    </div>
+    {% include "partials/pagination.html" %}
+  </div>
+</section>
+{% endblock %}

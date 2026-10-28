@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load unileap %}
+{% block title %}Contact Us – {{ site.site_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero.html" %}
+
+<section class="section">
+  <div class="container contact-grid">
+    {% with s=sections.form %}
+    <form class="card contact-card" id="form" method="post" action="{% url 'enquiry' %}" data-ajax>
+      {% csrf_token %}
+      <h2 class="section-title">{{ s.title|default:"Get in [[Touch]]"|hl }}</h2>
+      <p class="muted">{{ s.subtitle }}</p>
+      <input type="hidden" name="source" value="{{ request.path }}">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <input type="text" name="website" tabindex="-1" autocomplete="off" style="display:none">
+      <div class="form-grid">
+        <div><label class="form-label" for="c-name">Full Name *</label><div class="field"><i class="fa-regular fa-user"></i><input id="c-name" name="full_name" placeholder="Enter your full name" required maxlength="120"></div></div>
+        <div><label class="form-label" for="c-phone">Phone Number *</label><div class="field"><i class="fa-solid fa-phone"></i><input id="c-phone" name="phone" type="tel" placeholder="+91 Enter your phone number" required maxlength="30"></div></div>
+        <div><label class="form-label" for="c-email">Email Address *</label><div class="field"><i class="fa-regular fa-envelope"></i><input id="c-email" name="email" type="email" placeholder="Enter your email address" required></div></div>
+        <div><label class="form-label" for="c-dest">Preferred Destination *</label><div class="field"><i class="fa-solid fa-globe"></i><select id="c-dest" name="destination" required><option value="">Select destination</option>{% for d in form_destinations %}<option>{{ d }}</option>{% endfor %}</select></div></div>
+        <div><label class="form-label" for="c-level">Course Level *</label><div class="field"><i class="fa-solid fa-graduation-cap"></i><select id="c-level" name="course_level" required><option value="">Select course level</option>{% for l in form_levels %}<option>{{ l }}</option>{% endfor %}</select></div></div>
+        <div><label class="form-label" for="c-intake">Intended Intake *</label><div class="field"><i class="fa-regular fa-calendar"></i><select id="c-intake" name="intake" required><option value="">Select intake</option>{% for i in form_intakes %}<option>{{ i }}</option>{% endfor %}</select></div></div>
+        <div class="full"><label class="form-label" for="c-msg">Your Message (Optional)</label><div class="field textarea"><i class="fa-regular fa-comment-dots"></i><textarea id="c-msg" name="message" placeholder="Tell us about your goals or any specific questions..."></textarea></div></div>
+      </div>
+      <div style="text-align:center;margin-top:10px"><button class="btn btn-yellow btn-pill" type="submit" style="min-width:280px">Submit Enquiry <i class="fa-solid fa-arrow-right"></i></button></div>
+      <p class="form-note"><i class="fa-solid fa-lock"></i>Your information is safe with us. We respect your privacy and will never share your details without your consent.</p>
+    </form>
+    {% endwith %}
+
+    <aside class="card contact-info">
+      <div class="inner">
+        {% with s=sections.info %}
+        <h2 class="section-title">{{ s.title|default:"Contact [[Information]]"|hl }}</h2>
+        <p class="muted">{{ s.subtitle }}</p>
+        {% endwith %}
+        <div class="contact-line"><div class="ic-circle"><i class="fa-solid fa-phone"></i></div><div><strong><a href="tel:{{ site.phone|cut:' ' }}">{{ site.phone }}</a></strong><span>{{ site.hours }} IST</span></div></div>
+        <div class="contact-line"><div class="ic-circle"><i class="fa-solid fa-envelope"></i></div><div><strong><a href="mailto:{{ site.email }}">{{ site.email }}</a></strong><span>{{ site.email_note }}</span></div></div>
+        <div class="contact-line"><div class="ic-circle"><i class="fa-solid fa-location-dot"></i></div><div><strong>{{ site.city }}</strong><span>{{ site.address|linebreaksbr }}</span></div></div>
+        <div class="contact-line" style="margin:0"><div class="ic-circle"><i class="fa-regular fa-clock"></i></div><div><strong>Business Hours</strong><span>{{ site.hours }}</span><span>{{ site.closed_note }}</span></div></div>
+      </div>
+      <div class="follow">
+        {% with s=sections.follow %}
+        <h3 style="font-size:19px;margin-bottom:4px">{{ s.title|default:"Follow Us" }}</h3>
+        <p class="muted" style="font-size:13.5px">{{ s.subtitle }}</p>
+        {% endwith %}
+        <div class="socials">
+          {% if site.linkedin_url %}<a class="s-linkedin" href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>{% endif %}
+          {% if site.instagram_url %}<a class="s-instagram" href="{{ site.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>{% endif %}
+          {% if site.youtube_url %}<a class="s-youtube" href="{{ site.youtube_url }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>{% endif %}
+          {% if site.facebook_url %}<a class="s-facebook" href="{{ site.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>{% endif %}
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" id="location">
+  <div class="container location-grid">
+    <div class="card contact-card">
+      {% with s=sections.location %}
+      <h2 class="section-title" style="font-size:24px">{{ s.title|default:"Our Location"|hl }}</h2>
+      <p class="muted">{{ s.subtitle }}</p>
+      {% endwith %}
+      <div class="map-wrap">
+        {% if site.map_embed_url %}
+          <iframe src="{{ site.map_embed_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Office location map" allowfullscreen></iframe>
+        {% else %}
+          <a class="map-fallback" href="https://www.google.com/maps/search/?api=1&query={{ site.address|urlencode }}" target="_blank" rel="noopener"><div><i class="fa-solid fa-map-location-dot" style="font-size:40px;color:var(--blue)"></i><p style="margin:10px 0 0"><strong>{{ site.site_name }}</strong><br>{{ site.city }}<br><span class="link-arrow">Open in Google Maps</span></p></div></a>
+        {% endif %}
+        <div class="office-photo" style="background-image:url('{{ site.office_image_url }}')">
+          <div class="label"><i class="fa-solid fa-location-dot"></i><div><strong>{{ site.site_name }}</strong><br>{{ site.city }}</div></div>
+        </div>
+      </div>
+    </div>
+    {% with s=sections.online %}
+    <div class="card online-card">
+      <h3>{{ s.title|hl }}</h3>
+      <p class="muted" style="font-size:14px">{{ s.subtitle }}</p>
+      <a class="btn btn-primary btn-pill" href="{{ s.button_link|default:'/free-counselling/' }}">{{ s.button_text|default:"Book Online Counselling" }} <i class="fa-solid fa-arrow-right"></i></a>
+      <div class="mini-points">
+        {% for p in online_points %}<div><span class="ic-circle"><i class="{{ p.icon }}"></i></span>{{ p.title }}</div>{% endfor %}
+      </div>
+    </div>
+    {% endwith %}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" id="faq">
+  <div class="container faq-layout">
+    <div>
+      {% include "partials/section_head.html" with s=sections.faq %}
+      {% include "partials/faq_list.html" %}
+    </div>
+    {% with s=sections.cta %}
+    <div class="dark-cta" style="align-self:stretch;background-image:linear-gradient(130deg,rgba(10,35,80,.97),rgba(19,56,125,.85)),url('{{ s.image_src }}');background-size:cover">
+      <h3>{{ s.title|hl }}</h3>
+      <p>{{ s.subtitle }}</p>
+      <a class="btn btn-yellow btn-pill" href="{{ s.button_link|default:'#form' }}">{{ s.button_text|default:"Talk to Our Experts" }} <i class="fa-solid fa-arrow-right"></i></a>
+      <div class="mini-points">
+        {% for p in cta_points %}<div><span class="ic-circle"><i class="{{ p.icon }}"></i></span>{{ p.title }}</div>{% endfor %}
+      </div>
+    </div>
+    {% endwith %}
+  </div>
+</section>
+{% endblock %}

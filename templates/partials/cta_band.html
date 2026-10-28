@@ -1,0 +1,14 @@
+{% load unileap %}{# Bottom call-to-action band. Optional: s (Section) to override site defaults. #}
+<section class="cta-band" style="background-image:url('{% if s and s.image_src %}{{ s.image_src }}{% else %}{{ site.cta_image_url }}{% endif %}')">
+  <div class="container on-dark">
+    <div>
+      {% if s and s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      <h2>{% if s and s.title %}{{ s.title|hl }}{% else %}{{ site.cta_title|hl }}{% endif %}</h2>
+      <p>{% if s and s.subtitle %}{{ s.subtitle }}{% else %}{{ site.cta_subtitle }}{% endif %}</p>
+      <a class="btn btn-yellow btn-pill" href="{% if s and s.button_link %}{{ s.button_link }}{% else %}{% url 'core:counselling' %}{% endif %}">{% if s and s.button_text %}{{ s.button_text }}{% else %}Get Free Counselling{% endif %} <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    {% if s and s.script_text %}
+    <div class="script">{% for line in s.script_lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</div>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,45 @@
+{% extends "core/simple_page.html" %}
+{% block title %}Sitemap – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span>Sitemap{% endblock %}
+{% block banner %}<span class="eyebrow">Sitemap</span><h1>Find Your <span class="hl">Way Around</span></h1>{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container sitemap-cols">
+    <section><h3><i class="fa-solid fa-house hl"></i> Home</h3><ul><li><a href="/">Home</a></li><li><a href="{% url 'core:counselling' %}">Get Free Counselling</a></li></ul></section>
+    <section><h3><i class="fa-solid fa-globe hl"></i> Study Destinations</h3><ul>{% for d in destinations %}<li><a href="{{ d.get_absolute_url }}">{{ d.full_name }}</a></li>{% endfor %}<li><a href="{% url 'catalog:compare' %}">Compare Destinations</a></li></ul></section>
+    <section><h3><i class="fa-solid fa-graduation-cap hl"></i> Universities &amp; Courses</h3><ul>
+      <li><a href="{% url 'catalog:universities' %}">University Search</a></li>
+      <li><a href="{% url 'catalog:courses' %}">Courses by Subject</a><ul>{% for c in categories %}<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>{% endfor %}</ul></li>
+      <li><a href="{% url 'catalog:top_universities' %}">Top Universities</a></li>
+      <li><a href="{% url 'catalog:popular_courses' %}">Popular Courses</a></li>
+      <li><a href="{% url 'core:shortlisting' %}">University Shortlisting</a></li>
+    </ul></section>
+    <section><h3><i class="fa-solid fa-indian-rupee-sign hl"></i> Education Loan</h3><ul>
+      <li><a href="{% url 'loans:loan' %}">Overview</a></li>
+      <li><a href="{% url 'loans:section' 'loan-options' %}">Loan Options</a></li>
+      <li><a href="{% url 'loans:section' 'eligibility' %}">Eligibility Criteria</a></li>
+      <li><a href="{% url 'loans:section' 'documents' %}">Required Documents</a></li>
+      <li><a href="{% url 'loans:section' 'lenders' %}">Lenders &amp; Schemes</a></li>
+      <li><a href="{% url 'loans:section' 'process' %}">Loan Process</a></li>
+      <li><a href="{% url 'loans:section' 'faq' %}">FAQs</a></li>
+    </ul></section>
+    <section><h3><i class="fa-solid fa-newspaper hl"></i> Blog</h3><ul><li><a href="{% url 'blog:list' %}">All Articles</a></li>{% for c in blog_categories %}<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>{% endfor %}</ul></section>
+    <section><h3><i class="fa-solid fa-users hl"></i> About Us</h3><ul>
+      <li><a href="{% url 'core:about' %}">Our Story</a></li>
+      <li><a href="{% url 'core:about' %}#mission">Mission, Vision &amp; Values</a></li>
+      <li><a href="{% url 'core:about' %}#why-choose-us">Why Choose Us</a></li>
+      <li><a href="{% url 'core:team' %}">Our Team</a></li>
+      <li><a href="{% url 'core:partners' %}">Our Partners</a></li>
+      <li><a href="{% url 'core:testimonials' %}">Testimonials</a></li>
+    </ul></section>
+    <section><h3><i class="fa-solid fa-phone hl"></i> Contact Us</h3><ul>
+      <li><a href="{% url 'core:contact' %}">Get in Touch</a></li>
+      <li><a href="{% url 'core:contact' %}#location">Office Location</a></li>
+      <li><a href="{% url 'core:contact' %}#form">Book a Counselling Session</a></li>
+      <li><a href="{% url 'core:contact' %}#faq">FAQs</a></li>
+    </ul></section>
+    <section><h3><i class="fa-solid fa-scale-balanced hl"></i> Utility &amp; Legal</h3><ul>{% for pg in pages %}<li><a href="{{ pg.get_absolute_url }}">{{ pg.title }}</a></li>{% endfor %}<li><a href="{% url 'core:faq' %}">FAQs (General)</a></li></ul></section>
+    {% if recent_posts %}<section><h3><i class="fa-solid fa-pen hl"></i> Recent Articles</h3><ul>{% for p in recent_posts %}<li><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></li>{% endfor %}</ul></section>{% endif %}
+  </div>
+</section>
+{% endblock %}

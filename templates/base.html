@@ -1,0 +1,123 @@
+{% load static unileap %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.site_name }} – {{ site.tagline }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site.meta_description }}{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ site.site_name }}{% endblock %}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo-square.png' %}">
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% with p=request.path %}
+<header class="site-header">
+  <div class="container">
+    {% include "partials/brand.html" %}
+    <nav class="main-nav" aria-label="Main">
+      <ul>
+        <li><a class="nav-link {% if p == '/' %}active{% endif %}" href="{% url 'core:home' %}">Home</a></li>
+        <li class="has-dropdown">
+          <a class="nav-link {% if '/study-destinations' in p or '/compare-destinations' in p %}active{% endif %}" href="{% url 'catalog:destinations' %}">Study Destinations <i class="fa-solid fa-chevron-down" style="font-size:9px"></i></a>
+          <ul class="dropdown-menu">
+            {% for d in nav_destinations %}
+            <li><a href="{{ d.get_absolute_url }}"><img src="{{ d.flag_url }}" alt="">{{ d.full_name }}</a></li>
+            {% endfor %}
+            <li><a href="{% url 'catalog:compare' %}"><i class="fa-solid fa-scale-balanced" style="width:22px;text-align:center"></i>Compare Destinations</a></li>
+          </ul>
+        </li>
+        <li><a class="nav-link {% if '/universities-courses' in p or '/courses' in p or '/top-universities' in p or '/popular-courses' in p %}active{% endif %}" href="{% url 'catalog:universities' %}">Universities &amp; Courses</a></li>
+        <li><a class="nav-link {% if '/education-loan' in p %}active{% endif %}" href="{% url 'loans:loan' %}">Education Loan</a></li>
+        <li><a class="nav-link {% if '/blog' in p %}active{% endif %}" href="{% url 'blog:list' %}">Blog</a></li>
+        <li><a class="nav-link {% if '/about-us' in p %}active{% endif %}" href="{% url 'core:about' %}">About Us</a></li>
+        <li><a class="nav-link {% if '/contact' in p %}active{% endif %}" href="{% url 'core:contact' %}">Contact</a></li>
+        <li class="mobile-cta"><a class="btn btn-yellow btn-block" href="{% url 'core:counselling' %}">Get Free Counselling <i class="fa-solid fa-arrow-right"></i></a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-yellow header-cta" href="{% url 'core:counselling' %}">Get Free Counselling <i class="fa-solid fa-arrow-right"></i></a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</header>
+{% endwith %}
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        {% include "partials/brand.html" with light=1 %}
+        <p>{{ site.footer_about }}</p>
+        <div class="footer-social">
+          {% if site.facebook_url %}<a href="{{ site.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>{% endif %}
+          {% if site.instagram_url %}<a href="{{ site.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>{% endif %}
+          {% if site.linkedin_url %}<a href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>{% endif %}
+          {% if site.youtube_url %}<a href="{{ site.youtube_url }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>{% endif %}
+        </div>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'core:home' %}">Home</a></li>
+          <li><a href="{% url 'catalog:destinations' %}">Study Destinations</a></li>
+          <li><a href="{% url 'catalog:universities' %}">Universities &amp; Courses</a></li>
+          <li><a href="{% url 'loans:loan' %}">Education Loan</a></li>
+          <li><a href="{% url 'blog:list' %}">Blog</a></li>
+          <li><a href="{% url 'core:about' %}">About Us</a></li>
+          <li><a href="{% url 'core:contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Study Destinations</h4>
+        <ul class="footer-links">{% for d in nav_destinations %}<li><a href="{{ d.get_absolute_url }}">{{ d.name }}</a></li>{% endfor %}</ul>
+      </div>
+      <div>
+        <h4>Our Services</h4>
+        <ul class="footer-links">{% for s in footer_services %}<li><a href="{{ s.link|default:'/free-counselling/' }}">{{ s.title }}</a></li>{% endfor %}</ul>
+      </div>
+      <div>
+        <h4>Contact Us</h4>
+        <ul class="footer-contact">
+          <li><span class="ic"><i class="fa-solid fa-location-dot"></i></span><span>{{ site.city }}</span></li>
+          <li><span class="ic"><i class="fa-solid fa-envelope"></i></span><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+          <li><span class="ic"><i class="fa-solid fa-phone"></i></span><a href="tel:{{ site.phone|cut:' ' }}">{{ site.phone }}</a></li>
+          <li><span class="ic"><i class="fa-regular fa-clock"></i></span><span>{{ site.hours }}</span></li>
+        </ul>
+        <a class="btn btn-yellow btn-sm footer-cta" href="{% url 'core:counselling' %}">Get Free Counselling <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; {% now "Y" %} {{ site.site_name }}. All rights reserved.</span>
+      <nav>
+        {% for pg in footer_pages %}<a href="{{ pg.get_absolute_url }}">{{ pg.title }}</a>{% endfor %}
+        <a href="{% url 'core:faq' %}">FAQs</a>
+        <a href="{% url 'core:sitemap' %}">Sitemap</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+{% if site.whatsapp %}
+<a class="whatsapp-float" href="https://wa.me/{{ site.whatsapp }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+{% endif %}
+
+<div class="toast-wrap" aria-live="polite">
+  {% for message in messages %}
+  <div class="toast {% if message.tags == 'error' %}error{% else %}success{% endif %}" data-auto>
+    <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i><span>{{ message }}</span>
+  </div>
+  {% endfor %}
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

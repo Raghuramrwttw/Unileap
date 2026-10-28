@@ -1,0 +1,9 @@
+{# Accordion of FAQ objects. Expects `faqs`. First item opens when open_first is set. #}
+<div class="faq-list">
+  {% for f in faqs %}
+  <details class="faq-item" {% if open_first and forloop.first %}open{% endif %}>
+    <summary>{{ f.question }}</summary>
+    <div class="answer">{{ f.answer|safe }}</div>
+  </details>
+  {% endfor %}
+</div>

@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load unileap %}
+
+{% block content %}
+{% include "partials/hero.html" %}
+
+<div class="container">
+  {% include "partials/search_panel.html" with destinations=search_destinations levels=search_levels categories=categories active="all" switchable=1 extra_class="home-search" trending=trending %}
+</div>
+
+{# Destinations #}
+<section class="section">
+  <div class="container">
+    {% url 'catalog:destinations' as dest_url %}
+    {% include "partials/section_head.html" with s=sections.destinations link_url=dest_url link_text="View All Destinations" %}
+    <div class="grid grid-6">
+      {% for d in destinations %}
+      <article class="card dest-card" data-reveal>
+        <a class="img" href="{{ d.get_absolute_url }}">
+          {% if d.image_src %}<img src="{{ d.image_src }}" alt="{{ d.full_name }}" loading="lazy">{% endif %}
+        </a>
+        <div class="body">
+          <h3 class="dest-name"><img src="{{ d.flag_url }}" alt="">{{ d.full_name }}</h3>
+          <p>{{ d.short_description }}</p>
+          <a class="link-arrow sm" href="{% url 'catalog:universities' %}?destination={{ d.slug }}">Explore Universities <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# More than admissions #}
+{% with s=sections.why %}
+<section class="section soft">
+  <div class="container partner-split">
+    <div data-reveal>
+      {% if s.eyebrow %}<span class="eyebrow blue">{{ s.eyebrow }}</span>{% endif %}
+      <h2 class="section-title">{{ s.title|hl }}</h2>
+      <p class="muted">{{ s.subtitle }}</p>
+      {% if s.button_text %}<a class="btn btn-primary" href="{{ s.button_link|default:'/about-us/' }}">{{ s.button_text }} <i class="fa-solid fa-arrow-right"></i></a>{% endif %}
+    </div>
+    <div class="grid grid-2">
+      {% for item in why_items %}
+      <div class="card why-card" data-reveal>
+        <div class="ic-circle"><i class="{{ item.icon }}"></i></div>
+        <div><h4>{{ item.title }}</h4><p>{{ item.description }}</p></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+
+{# Stats #}
+{% if stats %}
+<section class="stats-band">
+  <div class="container stats">
+    {% for st in stats %}
+    <div class="stat"><div class="ic-circle"><i class="{{ st.icon }}"></i></div><div><strong>{{ st.value }}</strong><span>{{ st.label }}</span></div></div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# Services #}
+<section class="section">
+  <div class="container">
+    {% with s=sections.services %}
+    <div class="section-head">
+      <div>
+        {% if s.eyebrow %}<span class="eyebrow blue">{{ s.eyebrow }}</span>{% endif %}
+        <h2>{{ s.title|hl }}</h2>
+        {% if s.subtitle %}<p>{{ s.subtitle }}</p>{% endif %}
+      </div>
+      {% if s.button_text %}<a class="link-arrow" href="{{ s.button_link|default:'/free-counselling/' }}">{{ s.button_text }} <i class="fa-solid fa-arrow-right"></i></a>{% endif %}
+    </div>
+    {% endwith %}
+    <div class="grid grid-5">
+      {% for s in services %}
+      <div class="card service-card" data-reveal>
+        <div class="ic-circle"><i class="{{ s.icon }}"></i></div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.description }}</p>
+        <a class="link-arrow sm" href="{{ s.link|default:'/free-counselling/' }}">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# Course categories #}
+<section class="section" style="padding-top:0">
+  <div class="container">
+    {% url 'catalog:courses' as courses_url %}
+    {% include "partials/section_head.html" with s=sections.courses link_url=courses_url link_text="View All Courses" %}
+    <div class="grid grid-8">
+      {% for c in categories %}
+      <a class="card tile" href="{{ c.get_absolute_url }}" data-reveal><i class="{{ c.icon }}"></i>{{ c.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# Journey #}
+<section class="section steps-band on-dark">
+  <div class="container">
+    {% include "partials/section_head.html" with s=sections.journey center=1 %}
+    <div class="steps">
+      {% for step in steps %}
+      <div class="step" data-reveal>
+        <div class="num">{{ forloop.counter }}</div>
+        <h4>{{ step.title }}</h4>
+        <p>{{ step.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# Plan your journey #}
+{% with s=sections.cta %}{% if s %}
+<section class="section">
+  <div class="container">
+    <div class="plan-cta">
+      <div class="text" data-reveal>
+        <h2 class="section-title">{{ s.title|hl }}</h2>
+        <p class="muted">{{ s.subtitle }}</p>
+        <a class="btn btn-primary" href="{{ s.button_link|default:'/free-counselling/' }}">{{ s.button_text|default:"Get Free Counselling" }} <i class="fa-solid fa-arrow-right"></i></a>
+        {% if stats %}
+        <div class="trust">
+          <div class="avatars">{% for t in testimonials %}{% if t.image_src %}<img src="{{ t.image_src }}" alt="">{% else %}<span>{{ t.name|slice:":1" }}</span>{% endif %}{% endfor %}</div>
+          Trusted by {{ stats.0.value }} students
+        </div>
+        {% endif %}
+      </div>
+      <div class="photo" style="background-image:url('{{ s.image_src }}')">
+        {% if s.script_text %}<div class="script dark">{% for line in s.script_lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# Blog #}
+{% if posts %}
+<section class="section soft">
+  <div class="container">
+    {% url 'blog:list' as blog_url %}
+    {% with s=sections.blog %}
+    <div class="section-head">
+      <div>
+        {% if s.eyebrow %}<span class="eyebrow blue">{{ s.eyebrow }}</span>{% endif %}
+        <h2>{{ s.title|default:"Latest from [[Our Blog]]"|hl }}</h2>
+        {% if s.subtitle %}<p>{{ s.subtitle }}</p>{% endif %}
+      </div>
+      <a class="link-arrow" href="{{ blog_url }}">View All Articles <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    {% endwith %}
+    <div class="grid grid-3">
+      {% for post in posts %}{% include "blog/_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# FAQ #}
+<section class="section">
+  <div class="container">
+    {% url 'core:faq' as faq_url %}
+    {% include "partials/section_head.html" with s=sections.faq link_url=faq_url link_text="View More FAQs" %}
+    <div class="faq-layout">
+      {% include "partials/faq_list.html" with open_first=1 %}
+      <div class="photo-panel" style="background-image:url('{{ sections.faq.image_src }}')">
+        {% if sections.faq.script_text %}<div class="script dark">{% for line in sections.faq.script_lines %}{{ line }}<br>{% endfor %}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/cta_band.html" %}
+{% endblock %}

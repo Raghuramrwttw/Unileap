@@ -1,0 +1,32 @@
+{% extends "core/simple_page.html" %}
+{% load unileap %}
+{% block title %}Compare Study Destinations – {{ site.site_name }}{% endblock %}
+{% block crumbs %}<span>&rsaquo;</span><a href="{% url 'catalog:destinations' %}">Study Destinations</a><span>&rsaquo;</span>Compare{% endblock %}
+{% block banner %}
+<span class="eyebrow">Compare Destinations</span>
+<h1>Find the <span class="hl">Right Country</span> for You</h1>
+<p class="lead">Compare tuition fees, post-study work rights, living costs and PR options side by side.</p>
+{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr><th></th>{% for d in destinations %}<th><img src="{{ d.flag_url }}" alt="">{{ d.name }}</th>{% endfor %}</tr>
+        </thead>
+        <tbody>
+          {% for label, field, icon in rows %}
+          <tr>
+            <th><i class="{{ icon }}"></i>{{ label }}</th>
+            {% for d in destinations %}<td>{% with value=d|attr_get:field %}{{ value|default:"—" }}{% endwith %}</td>{% endfor %}
+          </tr>
+          {% endfor %}
+          <tr><th><i class="fa-solid fa-arrow-right"></i>Explore</th>{% for d in destinations %}<td><a class="link-arrow" href="{{ d.get_absolute_url }}">Study in {{ d.name }}</a></td>{% endfor %}</tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><i class="fa-solid fa-circle-info"></i>Figures are indicative and change frequently. Speak to our counsellors for the latest information for your course and university.</p>
+  </div>
+</section>
+{% endblock %}
