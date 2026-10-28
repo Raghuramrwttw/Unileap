@@ -54,6 +54,8 @@ Partway through, the script **pauses and prints two keys**:
 2. **Actions secrets**: GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**:
    - `VPS_HOST` = the IP the script printed
    - `VPS_SSH_KEY` = the private key the script printed (including the `BEGIN`/`END` lines)
+3. **Turn on auto-deploy**: same page → **Variables** tab → **New repository variable** → `DEPLOY_ENABLED` = `true`.
+   (Until this is set, pushes only run the tests and nothing is deployed.)
 
 The script installs PostgreSQL, Nginx and Python. It creates the database with a random password, generates a secret key, loads all the website content and starts the app. It also gets a free **HTTPS certificate** (Let's Encrypt).
 

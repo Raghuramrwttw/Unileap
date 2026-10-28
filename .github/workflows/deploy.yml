@@ -36,6 +36,9 @@ jobs:
 
   deploy:
     needs: test
+    # Turn on after the VPS is set up: repo Settings -> Secrets and variables -> Actions
+    # -> Variables -> New variable  DEPLOY_ENABLED = true
+    if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     environment: production
     steps:
